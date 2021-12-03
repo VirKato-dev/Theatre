@@ -4,9 +4,17 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /***
@@ -35,6 +43,57 @@ public class FileDatabase {
     }
 
     /***
+     * Получить список людей из базы
+     * @return список людей из файла
+     */
+    public static ArrayList<User> getUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        File file = new File(dir, users_db);
+        try {
+            if (file.exists()) {
+                InputStream fis = new FileInputStream(file);
+                Reader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                Scanner scanner = new Scanner(reader);
+                scanner.useDelimiter("\n"); // разделитель строк
+                String line;
+                while (scanner.hasNextLine()) {
+                    line = scanner.nextLine();
+                    User user = new User().fromString(line);
+                    users.add(user);
+                }
+                fis.close();
+                reader.close();
+                scanner.close();
+            }
+        } catch (IOException e) {
+            Log.e("get users", e.getMessage());
+        }
+        Log.e("get users", users.toString());
+        return users;
+    }
+
+    /***
+     * Добавить пользователя в файл
+     * @param user пользователь
+     */
+    public static void addOperator(User user) {
+        File file = new File(dir, users_db);
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            // открыть файл в режиме добавления текста
+            Writer fw = new FileWriter(file, true);
+            String line = user + "\n";
+            fw.write(line);
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            Log.e("add user", e.getMessage());
+        }
+    }
+
+    /***
      * Поиск пользователя в файле по идентификатору
      * @param login идентификатор уникален для каждого пользователя
      * @return данные о пользователе
@@ -48,6 +107,7 @@ public class FileDatabase {
 
         if (!login.equals(user.login)) {
             // если это не главный админ системы, то
+            user = new User();
             // искать пользователя в файле
             File file_from = new File(dir, users_db);
             try {
@@ -55,9 +115,8 @@ public class FileDatabase {
                     file_from.createNewFile();
                 }
                 // Подготавливаем Scanner для получения строк базы
-//                InputStream fis = new FileInputStream(file);
-//                Reader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-                FileReader reader = new FileReader(file_from);
+                InputStream fis = new FileInputStream(file_from);
+                Reader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
                 Scanner scanner = new Scanner(reader);
                 scanner.useDelimiter("\n");
 
@@ -75,13 +134,13 @@ public class FileDatabase {
                 }
 
                 // закрыть все использованные потоки
-                scanner.close();
+                fis.close();
                 reader.close();
-//                fis.close();
+                scanner.close();
             } catch (IOException e) {
                 // обработка ошибок при работе с файлом
                 // отладочная информация не выводится на основной экран приложения
-                Log.e("REPOSITORY find", e.getMessage());
+                Log.e("find user", e.getMessage());
             }
         }
         // вернуть данные найденного пользователя либо пустые данные
@@ -110,10 +169,8 @@ public class FileDatabase {
 
             // запись в файла будет производится в режиме дополнения информации
             FileWriter writer = new FileWriter(file_to, true);
-
-//            InputStream fis = new FileInputStream(file_from);
-//            Reader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-            FileReader reader = new FileReader(file_from);
+            InputStream fis = new FileInputStream(file_from);
+            Reader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
             Scanner scanner = new Scanner(reader);
             scanner.useDelimiter("\n"); // разделитель строк
 
@@ -130,10 +187,11 @@ public class FileDatabase {
                 }
             }
             writer.close();
+            fis.close();
             reader.close();
             scanner.close();
         } catch (IOException e) {
-            Log.e("REPOSITORY remove", e.getMessage());
+            Log.e("remove user", e.getMessage());
         }
         // удалить старую версию файла
         file_from.delete();
