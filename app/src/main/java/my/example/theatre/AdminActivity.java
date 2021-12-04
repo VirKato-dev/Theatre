@@ -229,6 +229,14 @@ public class AdminActivity extends AppCompatActivity {
         rv_cashiers.setVisibility(0 == page ? View.VISIBLE : View.GONE);
         rv_cinemas.setVisibility(1 == page ? View.VISIBLE : View.GONE);
         rv_sessions.setVisibility(2 == page ? View.VISIBLE : View.GONE);
+        // спрячем кнопку перехода на текущий режим
+        b_cashier.setVisibility(0 == page ? View.GONE : View.VISIBLE);
+        b_cinema.setVisibility(1 == page ? View.GONE : View.VISIBLE);
+        b_session.setVisibility(2 == page ? View.GONE : View.VISIBLE);
+        // изменим заголовок экрана
+        String[] titles = new String[]{"Кассиры", "Фильмы", "Сеансы"};
+        setTitle("Администратор - " + titles[screenNumber]);
+
     }
 
     /***
@@ -421,7 +429,7 @@ public class AdminActivity extends AppCompatActivity {
             cinema.id = id;
             cinema.name = name;
             cinema.duration = new SimpleDateFormat("HH:mm", Locale.getDefault())
-                            .parse(dur, new ParsePosition(0)).getTime();
+                    .parse(dur, new ParsePosition(0)).getTime();
             cinema.description = desc;
             // Проверяем уникальность ID
             Cinema c = FileDatabase.findCinemaById(cinema.id);
@@ -515,13 +523,9 @@ public class AdminActivity extends AppCompatActivity {
             Toast.makeText(this, "Все поля обязательны для заполнения", Toast.LENGTH_LONG).show();
         } else {
             String id = "";
-            // получить число из текста даты
-            long d = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                    .parse(date, new ParsePosition(0)).getTime();
-            // получить число из текста времени
-            long t = new SimpleDateFormat("HH:mm", Locale.getDefault())
-                    .parse(time, new ParsePosition(0)).getTime();
-            long datetime = d + t;
+            // получить дату и время в милисекундах (путём парсинга)
+            long datetime = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                    .parse(date + " " + time, new ParsePosition(0)).getTime();
 
             if (session.id.equals("")) {
                 // id пустой - создаётся новый сеанс
@@ -619,10 +623,10 @@ public class AdminActivity extends AppCompatActivity {
                             calendar.set(Calendar.YEAR, year);
                             calendar.set(Calendar.MONTH, monthOfYear);
                             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                            calendar.set(Calendar.HOUR_OF_DAY, 0);
-                            calendar.set(Calendar.MINUTE, 0);
-                            calendar.set(Calendar.SECOND, 0);
-                            calendar.set(Calendar.MILLISECOND, 0);
+//                            calendar.set(Calendar.HOUR_OF_DAY, 0);
+//                            calendar.set(Calendar.MINUTE, 0);
+//                            calendar.set(Calendar.SECOND, 0);
+//                            calendar.set(Calendar.MILLISECOND, 0);
                             String text = new SimpleDateFormat(format, Locale.getDefault())
                                     .format(calendar.getTimeInMillis());
                             tv.setText(text);
@@ -657,7 +661,7 @@ public class AdminActivity extends AppCompatActivity {
                 @Override
                 public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                     // поместим полученное время в виджета в нужном формате
-                    calendar.setTimeInMillis(0);
+//                    calendar.setTimeInMillis(0);
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     calendar.set(Calendar.MINUTE, minute);
                     String text = new SimpleDateFormat(format, Locale.getDefault())

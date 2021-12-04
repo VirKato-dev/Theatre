@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /***
@@ -61,6 +63,8 @@ public class FileDatabase {
         } catch (IOException e) {
             Log.e("get cashiers", e.getMessage());
         }
+        // сортируем список кассиров по полю ИМЯ
+        Collections.sort(cashiers, (o1, o2) -> o1.name.compareToIgnoreCase(o2.name));
         return cashiers;
     }
 
@@ -81,7 +85,7 @@ public class FileDatabase {
             fw.flush();
             fw.close();
         } catch (IOException e) {
-            Log.e("add user", e.getMessage());
+            Log.e("add cashier", e.getMessage());
         }
     }
 
@@ -203,6 +207,8 @@ public class FileDatabase {
         } catch (IOException e) {
             Log.e("get cinemas", e.getMessage());
         }
+        // сортируем фильмы по названию
+        Collections.sort(cinemas, (o1, o2) -> o1.name.compareToIgnoreCase(o2.name));
         return cinemas;
     }
 
@@ -348,6 +354,8 @@ public class FileDatabase {
         } catch (IOException e) {
             Log.e("get sessions", e.getMessage());
         }
+        // сортируем сеансы по названию
+        Collections.sort(sessions, (o1, o2) -> (int) (o1.date - o2.date));
         return sessions;
     }
 
