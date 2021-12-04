@@ -457,6 +457,8 @@ public class AdminActivity extends AppCompatActivity {
         t_time_session.setText("");
         e_price_session.setText("");
         spin_cinema_session.setAdapter(
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Hall.names));
+        spin_cinema_session.setAdapter(
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, FileDatabase.getCinemasAsListString()));
         showEdit(true);
     }
@@ -478,6 +480,13 @@ public class AdminActivity extends AppCompatActivity {
         int index = names.indexOf(FileDatabase.findCinemaById(session.cinema_id).name);
         // показать название фильма в выпадающем списке если он там найден
         if (index >= 0) spin_cinema_session.setSelection(index);
+        //
+        spin_hall_session.setAdapter(
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Hall.names));
+        // получить номер зала показа
+        index = Hall.names.indexOf(session.hall);
+        // показать название зала если он существует
+        if (index >= 0) spin_hall_session.setSelection(index);
         showEdit(true);
     }
 
@@ -522,11 +531,11 @@ public class AdminActivity extends AppCompatActivity {
         if (date.equals("") || time.equals("") || cinema_id.equals("") || price.equals("")) {
             Toast.makeText(this, "Все поля обязательны для заполнения", Toast.LENGTH_LONG).show();
         } else {
-            String id = "";
             // получить дату и время в милисекундах (путём парсинга)
             long datetime = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
                     .parse(date + " " + time, new ParsePosition(0)).getTime();
-
+            // создаём новый или используем имеющийся идентификатор сеанса
+            String id = "";
             if (session.id.equals("")) {
                 // id пустой - создаётся новый сеанс
                 id = genSessionID();
@@ -538,6 +547,7 @@ public class AdminActivity extends AppCompatActivity {
             // Создаём сеанс и указываем его данные
             session = new Session();
             session.id = id;
+            session.hall = spin_hall_session.getSelectedItem().toString();
             session.date = datetime;
             session.cinema_id = cinema_id;
             session.price = Double.parseDouble(price);

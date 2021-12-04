@@ -76,6 +76,7 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Session session = getItem(position);
+        holder.t_session_hall.setText(session.hall);
         holder.t_session_day.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(session.date));
         holder.t_session_time.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(session.date));
         holder.t_session_cinema_name.setText(FileDatabase.findCinemaById(session.cinema_id).name);
@@ -138,7 +139,7 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
      * из привязанного списка.
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private Spinner spin_hall_session;
+        private TextView t_session_hall;
         private TextView t_session_day;
         private TextView t_session_time;
         private TextView t_session_cinema_name;
@@ -149,6 +150,7 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
         private ViewHolder(View itemView) {
             super(itemView);
 
+            t_session_hall = itemView.findViewById(R.id.t_session_hall);
             t_session_day = itemView.findViewById(R.id.t_session_day);
             t_session_time = itemView.findViewById(R.id.t_session_time);
             t_session_cinema_name = itemView.findViewById(R.id.t_session_cinema_name);

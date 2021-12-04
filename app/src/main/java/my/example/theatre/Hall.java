@@ -11,5 +11,5 @@ public class Hall {
     /***
      * Названия залов просмотра
      */
-    public final static ArrayList<String> name = new ArrayList<>(Arrays.asList("Красный", "Синий"));
+    public final static ArrayList<String> names = new ArrayList<>(Arrays.asList("Красный", "Синий"));
 }
