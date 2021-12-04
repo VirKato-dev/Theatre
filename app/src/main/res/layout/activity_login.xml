@@ -46,6 +46,13 @@
             android:ems="10"
             android:inputType="textPassword" />
 
+        <CheckBox
+            android:id="@+id/cb_save_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Запомнить" />
+
         <Button
             android:id="@+id/b_login"
             android:layout_width="match_parent"

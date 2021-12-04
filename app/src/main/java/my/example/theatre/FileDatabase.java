@@ -94,7 +94,7 @@ public class FileDatabase {
      * @param login идентификатор уникален для каждого кассира
      * @return данные о кассире
      */
-    public static Cashier findUserById(String login) {
+    public static Cashier findCashierById(String login) {
         // данные главного Админа системы
         Cashier cashier = new Cashier();
         cashier.login = "admin";

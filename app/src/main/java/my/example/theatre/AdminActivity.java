@@ -1,8 +1,11 @@
 package my.example.theatre;
 
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -218,6 +222,31 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     /***
+     * меню справа сверху
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add("Выйти из аккаунта");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /***
+     * сработает при выборе любого пункта меню (справа сверху)
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
+        sp.edit().remove("login").apply();
+        sp.edit().remove("password").apply();
+        finish();
+        return super.onOptionsItemSelected(item);
+    }
+
+    /***
      * Показать макет экрана соответствующий текущему режиму редактирования без демонстрации формы для редактирования данных:
      * 0 - кассир; 1 - фильм; 2 - сеанс.
      */
@@ -340,7 +369,7 @@ public class AdminActivity extends AppCompatActivity {
             cashier.password = password;
             cashier.name = name;
             // Проверяем уникальность логина
-            Cashier h = FileDatabase.findUserById(cashier.login);
+            Cashier h = FileDatabase.findCashierById(cashier.login);
             if (h.login.equals("")) {
                 // Когда не найден кассир с таким логином - можно добавить кассира с этим логином
                 FileDatabase.addUser(cashier);
@@ -575,7 +604,7 @@ public class AdminActivity extends AppCompatActivity {
         String newUID;
         do {
             newUID = "id" + new Random().nextInt();
-            u = FileDatabase.findUserById(newUID);
+            u = FileDatabase.findCashierById(newUID);
         } while (!u.login.equals(""));
         // когда не нашёлся пользователь с таким идентификатором
         return newUID;
