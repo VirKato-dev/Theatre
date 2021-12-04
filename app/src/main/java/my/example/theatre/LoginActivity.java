@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private String login = "";
     private String password = "";
 
-    private User user;
+    private Cashier cashier;
 
 
     @Override
@@ -55,18 +55,18 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Поля 'Логин' и 'Пароль' должны быть заполнены", Toast.LENGTH_LONG).show();
         } else {
             // ищем пользователя по базе данных
-            user = FileDatabase.findUserById(login);
+            cashier = FileDatabase.findUserById(login);
             // user будет обязательно иметь какие-то данные (!=null)
 
-            if (user.login.equals(login) && user.password.equals(password)) {
+            if (cashier.login.equals(login) && cashier.password.equals(password)) {
                 // если найден пользователь с указанными логином и паролем,
                 // то перейти на соответствующий экран
-                if (user.login.equals("admin")) {
+                if (cashier.login.equals("admin")) {
                     startActivity(new Intent(this, AdminActivity.class));
                 } else {
                     startActivity(new Intent(this, CashierActivity.class));
                 }
-                Toast.makeText(this, "Добро пожаловать, " + user.name + "!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Добро пожаловать, " + cashier.name + "!", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Такого пользователя не существует.", Toast.LENGTH_LONG).show();
             }

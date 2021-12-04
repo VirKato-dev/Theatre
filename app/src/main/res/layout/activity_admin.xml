@@ -14,7 +14,7 @@
         android:layout_margin="4dp"
         android:orientation="vertical"
         android:padding="4dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="Зал:"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <Spinner
                 android:id="@+id/spin_hall_session"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="Дата:"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/t_date_session"
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="Время:"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/t_time_session"
@@ -99,6 +99,11 @@
                 app:srcCompat="@drawable/ic_time" />
         </LinearLayout>
 
+        <Spinner
+            android:id="@+id/spin_cinema_session"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:id="@+id/l_price_session"
             android:layout_width="match_parent"
@@ -112,10 +117,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="Цена:"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <EditText
-                android:id="@+id/t_price_session"
+                android:id="@+id/e_price_session"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:hint="0.00"
@@ -151,7 +156,7 @@
         android:layout_margin="4dp"
         android:orientation="vertical"
         android:padding="4dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -172,8 +177,8 @@
                 android:id="@+id/e_cashier_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -198,8 +203,8 @@
                     android:id="@+id/e_cashier_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -219,8 +224,8 @@
                     android:id="@+id/e_cashier_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="textPassword" />
+                    android:inputType="text"
+                    android:textSize="20sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -239,7 +244,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/l_bottom_buttons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -268,8 +273,37 @@
             android:id="@+id/e_cinema_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:id="@+id/l_duration_cinema"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="Длительность:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/t_duration_cinema"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="00:00"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_time" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView7"
@@ -282,9 +316,9 @@
             android:id="@+id/e_cinema_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:inputType="textMultiLine"
-            android:maxLines="5" />
+            android:maxLines="5"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/b_save_cinema"

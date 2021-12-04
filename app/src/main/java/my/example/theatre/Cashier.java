@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 /***
  * Характеристики пользователя (кассира)
  */
-public class User {
+public class Cashier {
 
     /***
      * Логин пользователя
@@ -27,7 +27,7 @@ public class User {
      * @param str параметры в формате одной строки
      * @return пользователь с установленными характеристиками
      */
-    public User fromString(String str) {
+    public Cashier fromString(String str) {
         // разделить строку на элементы используя разделитель "|"
         String[] s = str.split("\\|");
         login = s[0];

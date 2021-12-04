@@ -2,23 +2,30 @@ package my.example.theatre;
 
 import androidx.annotation.NonNull;
 
+import java.util.Locale;
+
 /***
- * Характеристики фильма или мультика
+ * Характеристики фильма
  */
 public class Cinema {
 
     /***
-     * Идентификатор фильма, мультика
+     * Идентификатор фильма
      */
     public String id = "";
 
     /***
-     * Название фильма, мультика
+     * Название фильма
      */
     public String name = "";
 
     /***
-     * Описание фильма, мультика
+     * Длительность фильма
+     */
+    public long duration = 0L;
+
+    /***
+     * Описание фильма
      */
     public String description = "";
 
@@ -31,7 +38,8 @@ public class Cinema {
         String[] s = str.split("\\|");
         id = s[0];
         name = s[1];
-        description = s[2];
+        duration = Long.parseLong(s[2]);
+        description = s[3];
         return this;
     }
 
@@ -44,6 +52,8 @@ public class Cinema {
     @Override
     public String toString() {
         // объединить характеристики в строка используя разделитель "|"
-        return id + "|" + name + "|" + description;
+        return id + "|" + name + "|" +
+                String.format(Locale.US,"%d", duration) + "|" +
+                description;
     }
 }

@@ -30,11 +30,6 @@ public class Session {
     public long date = 0L;
 
     /***
-     * Длительность показа
-     */
-    public long duration = 0L;
-
-    /***
      * Стоимость сеанса
      */
     public double price = 0d;
@@ -50,8 +45,7 @@ public class Session {
         hall = s[1];
         cinema_id = s[2];
         date = Long.parseLong(s[3]);
-        duration = Long.parseLong(s[4]);
-        price = Double.parseDouble(s[5]);
+        price = Double.parseDouble(s[4]);
         return this;
     }
 
@@ -66,7 +60,6 @@ public class Session {
         // объединить характеристики в строка используя разделитель "|"
         return  id + "|" + hall + "|" + cinema_id + "|" +
                 String.format(Locale.US,"%d", date) + "|" +
-                String.format(Locale.US,"%d", duration) + "|" +
-                String.format(Locale.US,"%.2f", price) + "|" + hall;
+                String.format(Locale.US,"%.2f", price);
     }
 }

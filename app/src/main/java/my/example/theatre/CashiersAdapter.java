@@ -16,7 +16,7 @@ public class CashiersAdapter extends RecyclerView.Adapter<CashiersAdapter.ViewHo
     /***
      * Ссылка на привязанный список кассиров
      */
-    private ArrayList<User> data;
+    private ArrayList<Cashier> data;
 
     /***
      * Инструмент позволяющий сделать из XML-файла виджет для последующего вывода на экран
@@ -35,18 +35,18 @@ public class CashiersAdapter extends RecyclerView.Adapter<CashiersAdapter.ViewHo
 
     /***
      * Создать адаптер управляющий выводом данных из списка на экран
-     * @param users привязанный список кассиров
+     * @param cashiers привязанный список кассиров
      */
-    public CashiersAdapter(ArrayList<User> users) {
-        setNewList(users);
+    public CashiersAdapter(ArrayList<Cashier> cashiers) {
+        setNewList(cashiers);
     }
 
     /***
      * Привязать список данных для последующего отображения на экране
-     * @param users список кассиров
+     * @param cashiers список кассиров
      */
-    public void setNewList(ArrayList<User> users) {
-        data = users;
+    public void setNewList(ArrayList<Cashier> cashiers) {
+        data = cashiers;
         notifyDataSetChanged();
     }
 
@@ -72,10 +72,10 @@ public class CashiersAdapter extends RecyclerView.Adapter<CashiersAdapter.ViewHo
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User user = getItem(position);
+        Cashier cashier = getItem(position);
         // вывод данных о кассире
-        holder.t_cashier_name.setText(user.name);
-        holder.t_cashier_login.setText(user.login);
+        holder.t_cashier_name.setText(cashier.name);
+        holder.t_cashier_login.setText(cashier.login);
     }
 
     /***
@@ -91,7 +91,7 @@ public class CashiersAdapter extends RecyclerView.Adapter<CashiersAdapter.ViewHo
      * @param position позиция в списке
      * @return данные о кассире типа User
      */
-    public User getItem(int position) {
+    public Cashier getItem(int position) {
         return data.get(position);
     }
 
