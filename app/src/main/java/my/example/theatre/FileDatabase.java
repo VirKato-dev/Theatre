@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -391,6 +392,22 @@ public class FileDatabase {
         }
         // сортируем сеансы по названию
         Collections.sort(sessions, (o1, o2) -> (int) (o1.date - o2.date));
+        return sessions;
+    }
+
+    /***
+     * Получить список сеансов на указанную дату и для указанного зала из базы
+     * @param date дата сеансов
+     * @param hallName название зала
+     * @return список сеансов
+     */
+    public static ArrayList<Session> getSessions(String date, String hallName) {
+        ArrayList<Session> sessions = getSessions(date);
+        Iterator<Session> it = sessions.iterator();
+        while (it.hasNext()) {
+            Session s = it.next();
+            if (!s.hall.equals(hallName)) it.remove();
+        }
         return sessions;
     }
 

@@ -84,7 +84,11 @@ public class ChairsAdapter extends RecyclerView.Adapter<ChairsAdapter.ViewHolder
         // номер места в ряду
         holder.t_chair.setText(String.format("%02d", num+1));
         // красным если занято
-        if (chair) holder.i_chair.setColorFilter(Color.RED);
+        if (chair) {
+            holder.i_chair.setColorFilter(Color.RED);
+        } else {
+            holder.i_chair.setColorFilter(Color.GREEN);
+        }
     }
 
     /***

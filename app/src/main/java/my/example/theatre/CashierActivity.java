@@ -71,7 +71,7 @@ public class CashierActivity extends AppCompatActivity {
         spin_hall_ticket.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (t_date_ticket.getText().toString().equals("")) {
+                if (!t_date_ticket.getText().toString().equals("")) {
                     // если дата сеанса указана
                     showSessions(true);
                 }
@@ -98,9 +98,10 @@ public class CashierActivity extends AppCompatActivity {
      * @param isShow
      */
     private void showSessions(boolean isShow) {
+        l_chairs_cashier.setVisibility(View.GONE);
         rv_sessions_cashier.setVisibility(isShow ? View.VISIBLE : View.GONE);
         String date = t_date_ticket.getText().toString();
-        sessions = FileDatabase.getSessions(date);
+        sessions = FileDatabase.getSessions(date, spin_hall_ticket.getSelectedItem().toString());
 
         sessionsAdapter = new SessionsAdapter(sessions);
         // задать способ взаимного расположения элементов списка на экране (Вертикальный)
@@ -189,10 +190,7 @@ public class CashierActivity extends AppCompatActivity {
      * Показать места для зрителей выбранного сеанса
      */
     private void showChairs(Session session) {
-//        String date = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(session.date);
-//        if (!date.equals("")) {
-//            day =  new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-//                    .parse(date, new ParsePosition(0)).getTime();
+        l_chairs_cashier.setVisibility(View.VISIBLE);
         datetime = session.date;
 
         hall = FileDatabase.getHallForDate(datetime);
@@ -204,14 +202,13 @@ public class CashierActivity extends AppCompatActivity {
         rv_chairs.setLayoutManager(gridLayoutManager);
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         chairsAdapter.setClickListener((view, position) -> {
+            changeStateOfChair(datetime, position);
         });
         // задать обработчик долгого нажатия на элемент списка
         chairsAdapter.setLongClickListener((view, position) -> {
-            changeStateOfChair(datetime, position);
         });
         // связываем виджет списка с адаптером данных списка
         rv_chairs.setAdapter(chairsAdapter);
-//        }
     }
 
     private void changeStateOfChair(long date, int pos) {
