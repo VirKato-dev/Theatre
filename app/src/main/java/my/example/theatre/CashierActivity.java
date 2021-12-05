@@ -40,6 +40,9 @@ public class CashierActivity extends AppCompatActivity {
     private LinearLayout l_chairs_cashier;
     private RecyclerView rv_chairs;
     private ChairsAdapter chairsAdapter;
+    private TextView t_ses_time;
+    private TextView t_ses_cinema;
+    private TextView t_ses_price;
 
     private RecyclerView rv_sessions_cashier;
     private SessionsAdapter sessionsAdapter;
@@ -89,13 +92,17 @@ public class CashierActivity extends AppCompatActivity {
         l_chairs_cashier = findViewById(R.id.l_chairs_cashier);
         rv_sessions_cashier = findViewById(R.id.rv_sessions_cashier);
 
+        t_ses_time = findViewById(R.id.t_ses_time);
+        t_ses_cinema = findViewById(R.id.t_ses_cinema);
+        t_ses_price = findViewById(R.id.t_ses_price);
+
         showSessions(false);
 
     }
 
     /***
      * Показать список сеансов на указанную дату
-     * @param isShow
+     * @param isShow показать?
      */
     private void showSessions(boolean isShow) {
         l_chairs_cashier.setVisibility(View.GONE);
@@ -108,7 +115,11 @@ public class CashierActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rv_sessions_cashier.setLayoutManager(linearLayoutManager);
         sessionsAdapter.setClickListener((view, position) -> {
-            showChairs(sessionsAdapter.getItem(position));
+            Session ses = sessionsAdapter.getItem(position);
+            t_ses_time.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(ses.date));
+            t_ses_cinema.setText(FileDatabase.findCinemaById(ses.cinema_id).name);
+            t_ses_price.setText(String.format(Locale.ENGLISH,"%.2f", ses.price));
+            showChairs(ses);
         });
         // задать обработчик долгого нажатия на элемент списка
         sessionsAdapter.setLongClickListener((view, position) -> {
@@ -191,6 +202,8 @@ public class CashierActivity extends AppCompatActivity {
      */
     private void showChairs(Session session) {
         l_chairs_cashier.setVisibility(View.VISIBLE);
+        rv_sessions_cashier.setVisibility(View.GONE);
+
         datetime = session.date;
 
         hall = FileDatabase.getHallForDate(datetime);
@@ -211,6 +224,11 @@ public class CashierActivity extends AppCompatActivity {
         rv_chairs.setAdapter(chairsAdapter);
     }
 
+    /***
+     * Изменить состояние места и обновить изображение
+     * @param date дата показа
+     * @param pos место
+     */
     private void changeStateOfChair(long date, int pos) {
         // заменить значение на противоположное
         boolean[] c;

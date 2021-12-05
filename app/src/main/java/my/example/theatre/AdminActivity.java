@@ -407,7 +407,7 @@ public class AdminActivity extends AppCompatActivity {
         this.cinema = cinema;
         // заполняем форму соответствующими данными
         e_cinema_name.setText(cinema.name);
-        t_duration_cinema.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(cinema.duration));
+        t_duration_cinema.setText(cinema.getDurationAsText());
         e_cinema_description.setText(cinema.description);
         showEdit(true);
     }
@@ -459,6 +459,7 @@ public class AdminActivity extends AppCompatActivity {
             cinema = new Cinema();
             cinema.id = id;
             cinema.name = name;
+            // сохранить длительность с применением поправки на часовой пояс устройства
             cinema.duration = new SimpleDateFormat("HH:mm", Locale.getDefault())
                     .parse(dur, new ParsePosition(0)).getTime();
             cinema.description = desc;
@@ -551,9 +552,14 @@ public class AdminActivity extends AppCompatActivity {
         String date = t_date_session.getText().toString().trim();
         String time = t_time_session.getText().toString().trim();
         String cinema_id = "";
-        int index = spin_cinema_session.getAdapter().getCount();
-        if (index >= 0) {
+        long duration = 0L;
+        String hallName = spin_hall_session.getSelectedItem().toString();
+
+        int count = spin_cinema_session.getAdapter().getCount();
+        if (count >= 0) {
+            // если есть хоть один фильм в базе
             cinema_id = cinemas.get(spin_cinema_session.getSelectedItemPosition()).id;
+            duration = cinemas.get(spin_cinema_session.getSelectedItemPosition()).getDurationAsDelay();
         }
         String price = e_price_session.getText().toString().trim();
         if (date.equals("") || time.equals("") || cinema_id.equals("") || price.equals("")) {
@@ -562,6 +568,7 @@ public class AdminActivity extends AppCompatActivity {
             // получить дату и время в милисекундах (путём парсинга)
             long datetime = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
                     .parse(date + " " + time, new ParsePosition(0)).getTime();
+
             // создаём новый или используем имеющийся идентификатор сеанса
             String id = "";
             if (session.id.equals("")) {
@@ -572,24 +579,30 @@ public class AdminActivity extends AppCompatActivity {
                 id = session.id;
                 FileDatabase.removeSessionById(session.id);
             }
-            // Создаём сеанс и указываем его данные
-            session = new Session();
-            session.id = id;
-            session.hall = spin_hall_session.getSelectedItem().toString();
-            session.date = datetime;
-            session.cinema_id = cinema_id;
-            session.price = Double.parseDouble(price);
-            // Проверяем уникальность ID
-            Session s = FileDatabase.findSessionById(session.id);
-            if (s.id.equals("")) {
-                // Когда не найден сеанс с таким ID - можно добавить сеанс с этим ID
-                FileDatabase.addSession(session);
-                // Получить обновлённый список сеансов
-                sessions = FileDatabase.getSessions();
-                // Показать обновлённый список сеансов
-                sessionsAdapter.setNewList(sessions);
-                // Спрятать форму редактирования данных
-                showEdit(false);
+
+            if (!FileDatabase.isFreeTime(datetime, duration, hallName, id)) {
+                Toast.makeText(this, "Нельзя использовать указанное время.\nНакладка с другими сеансами.",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                // Создаём сеанс и указываем его данные
+                session = new Session();
+                session.id = id;
+                session.hall = hallName;
+                session.date = datetime;
+                session.cinema_id = cinema_id;
+                session.price = Double.parseDouble(price);
+                // Проверяем уникальность ID
+                Session s = FileDatabase.findSessionById(session.id);
+                if (s.id.equals("")) {
+                    // Когда не найден сеанс с таким ID - можно добавить сеанс с этим ID
+                    FileDatabase.addSession(session);
+                    // Получить обновлённый список сеансов
+                    sessions = FileDatabase.getSessions();
+                    // Показать обновлённый список сеансов
+                    sessionsAdapter.setNewList(sessions);
+                    // Спрятать форму редактирования данных
+                    showEdit(false);
+                }
             }
         }
     }

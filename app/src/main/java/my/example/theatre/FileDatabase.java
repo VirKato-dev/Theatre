@@ -333,6 +333,35 @@ public class FileDatabase {
         file_from.delete();
     }
 
+    /***
+     * Свободен ли указанный временной интервал от сеансов
+     * @param start начало сеанса
+     * @param duration продолжительность сеанса
+     * @param hallName название зала
+     * @param sessionId новый сеанс
+     * @return да?
+     */
+    public static boolean isFreeTime(long start, long duration, String hallName, String sessionId) {
+        // получить только дату в виде текста
+        String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(start);
+        ArrayList<Session> sessions = getSessions(date, hallName);
+
+        for (Session s : sessions) {
+            // длительность существующего сеанса
+            if (!sessionId.equals("") && !sessionId.equals(s.id)) {
+                // не проверяем существующий сеанс, если у него ID создаваемого сеанса
+                long dur = FileDatabase.findCinemaById(s.cinema_id).getDurationAsDelay();
+                if ((start >= s.date && start <= s.date + dur) ||
+                        (start + duration >= s.date && start + duration <= s.date + dur)) {
+                    // если границы нового сеанса пересеклись с границами уже существующих сеансов,
+                    // то сохранять текущий сеанс нельзя из-за временной накладки сеансов
+                    return false;
+                }
+            }
+        }
+        // ниодной временной накладки с существующими сеансами не обнаружено
+        return true;
+    }
 
     /***
      * Получить список сеансов из базы
