@@ -156,6 +156,8 @@ public class AdminActivity extends AppCompatActivity {
         // форма редактирования сеанса
         l_session_edit = findViewById(R.id.l_session_edit);
         spin_hall_session = findViewById(R.id.spin_hall_session);
+        spin_hall_session.setAdapter(
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Hall.names));
         t_date_session = findViewById(R.id.t_date_session);
         l_date_session = findViewById(R.id.l_date_session);
         bindDatePickerTo(l_date_session, t_date_session, "dd/MM/yyyy");
@@ -509,9 +511,6 @@ public class AdminActivity extends AppCompatActivity {
         int index = names.indexOf(FileDatabase.findCinemaById(session.cinema_id).name);
         // показать название фильма в выпадающем списке если он там найден
         if (index >= 0) spin_cinema_session.setSelection(index);
-        //
-        spin_hall_session.setAdapter(
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Hall.names));
         // получить номер зала показа
         index = Hall.names.indexOf(session.hall);
         // показать название зала если он существует
@@ -662,10 +661,6 @@ public class AdminActivity extends AppCompatActivity {
                             calendar.set(Calendar.YEAR, year);
                             calendar.set(Calendar.MONTH, monthOfYear);
                             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//                            calendar.set(Calendar.HOUR_OF_DAY, 0);
-//                            calendar.set(Calendar.MINUTE, 0);
-//                            calendar.set(Calendar.SECOND, 0);
-//                            calendar.set(Calendar.MILLISECOND, 0);
                             String text = new SimpleDateFormat(format, Locale.getDefault())
                                     .format(calendar.getTimeInMillis());
                             tv.setText(text);
@@ -700,7 +695,6 @@ public class AdminActivity extends AppCompatActivity {
                 @Override
                 public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                     // поместим полученное время в виджета в нужном формате
-//                    calendar.setTimeInMillis(0);
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     calendar.set(Calendar.MINUTE, minute);
                     String text = new SimpleDateFormat(format, Locale.getDefault())

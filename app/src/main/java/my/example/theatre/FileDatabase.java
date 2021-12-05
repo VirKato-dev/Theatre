@@ -9,9 +9,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.Scanner;
 
 /***
@@ -23,6 +25,7 @@ public class FileDatabase {
     private static final String users_db = "users.db";
     private static final String cinemas_db = "cinemas.db";
     private static final String sessions_db = "sessions.db";
+    private static final String hall_db = "hall.db";
     private static final String tickets_db = "tickets.db";
 
     /***
@@ -360,6 +363,38 @@ public class FileDatabase {
     }
 
     /***
+     * Получить список сеансов на указанную дату из базы
+     * @param date дата сеансов
+     * @return список сеансов
+     */
+    public static ArrayList<Session> getSessions(String date) {
+        ArrayList<Session> sessions = new ArrayList<>();
+        File file_from = new File(dir, sessions_db);
+        try {
+            if (file_from.exists()) {
+                Reader reader = new FileReader(file_from);
+                Scanner scanner = new Scanner(reader);
+                scanner.useDelimiter("\n"); // разделитель строк
+                String line;
+                while (scanner.hasNextLine()) {
+                    line = scanner.nextLine();
+                    Session session = new Session().fromString(line);
+                    if (date.equals(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(session.date))) {
+                        sessions.add(session);
+                    }
+                }
+                reader.close();
+                scanner.close();
+            }
+        } catch (IOException e) {
+            Log.e("get sessions", e.getMessage());
+        }
+        // сортируем сеансы по названию
+        Collections.sort(sessions, (o1, o2) -> (int) (o1.date - o2.date));
+        return sessions;
+    }
+
+    /***
      * Добавить сеанс в файл
      * @param session сеанс
      */
@@ -462,5 +497,110 @@ public class FileDatabase {
         // удалить старую версию файла
         file_from.delete();
     }
+
+    /***
+     * Получить состояние залов на указанную дату
+     * @param datetime дата и время показа
+     * @return залы
+     */
+    public static Hall getHallForDate(long datetime) {
+        Hall hall = new Hall();
+        // искать залы в файле
+        File file_from = new File(dir, hall_db);
+        try {
+            if (!file_from.exists()) {
+                file_from.createNewFile();
+            }
+            // Подготавливаем Scanner для получения строк базы
+            Reader reader = new FileReader(file_from);
+            Scanner scanner = new Scanner(reader);
+            scanner.useDelimiter("\n");
+            while (scanner.hasNextLine()) {
+                // читаем очередную строку данных из файла
+                String line = scanner.nextLine();
+                hall.fromString(line);
+                if (hall.date == datetime) {
+                    // прерываем цикл, чтобы данные найденных залов ушли на обработку
+                    break;
+                }
+                // очистить данные о ненужных залах, чтобы последние ненужные данные не ушли на обработку
+                hall = new Hall();
+            }
+            // закрыть все использованные потоки
+            reader.close();
+            scanner.close();
+        } catch (IOException e) {
+            // отладочная информация не выводится на основной экран приложения
+            Log.e("find hall", e.getMessage());
+        }
+        return hall;
+    }
+
+    /***
+     * Удалить залы на указанную дату
+     * @param date дата
+     */
+    public static void removeHallForDate(long date) {
+        // сделать копию файла для последующего обновления данных
+        File file_from = new File(dir, hall_db + ".bak");
+        File file_to = new File(dir, hall_db);
+        if (file_to.exists()) file_to.renameTo(new File(dir, hall_db + ".bak"));
+        try {
+            if (!file_from.exists()) {
+                // для правильной работы нам требуется наличие файла-источника (даже пустого)
+                file_from.createNewFile();
+            }
+            if (!file_to.exists()) {
+                // требуется наличие файла-приёмника
+                file_to.createNewFile();
+            }
+            // запись в файла будет производится в режиме дополнения информации
+            FileWriter writer = new FileWriter(file_to, true);
+            Reader reader = new FileReader(file_from);
+            Scanner scanner = new Scanner(reader);
+            scanner.useDelimiter("\n"); // разделитель строк
+            while (scanner.hasNextLine()) {
+                // получить очередную строку данных
+                String line = scanner.nextLine();
+                Hall hall = new Hall();
+                hall.fromString(line);
+                if (hall.date != date) {
+                    // если не та дата, которую нужно удалить, то записать залы в новый файл
+                    writer.write(line + "\n");
+                    writer.flush();
+                }
+            }
+            // закрыть все потоки
+            writer.close();
+            reader.close();
+            scanner.close();
+        } catch (IOException e) {
+            Log.e("remove hall", e.getMessage());
+        }
+        // удалить старую версию файла
+        file_from.delete();
+    }
+
+    /***
+     * Добавить зал в файл
+     * @param hall сеанс
+     */
+    public static void addHall(Hall hall) {
+        File file = new File(dir, hall_db);
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            // открыть файл в режиме добавления текста
+            Writer fw = new FileWriter(file, true);
+            String line = hall + "\n";
+            fw.write(line);
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            Log.e("add hall", e.getMessage());
+        }
+    }
+
 
 }

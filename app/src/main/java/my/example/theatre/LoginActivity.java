@@ -55,6 +55,8 @@ public class LoginActivity extends AppCompatActivity {
             // авторизовался ранее
             login = sp.getString("login", "");
             password = sp.getString("password", "");
+            // продолжаем сохранять авторизацию
+            cb_save_me.setChecked(true);
             canGo(login, password);
         }
     }
